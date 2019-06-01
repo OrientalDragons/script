@@ -24,6 +24,12 @@ var restr = strings.Split(strings.Replace(arrstr[9], "\\r", "", -1), ",")
 var outstr = strings.Split(strings.Replace(arrstr[11], "\\r", "", -1), ",")
 
 func main() {
+	defer func() {
+		if eEnd := recover(); eEnd != nil {
+			fmt.Println(eEnd)
+			Log("--" + eEnd.(string))
+		}
+	}()
 	if copyList == "" {
 		e1 := copyDirFile(fromFolder, outFolder, restr, outstr)
 		if e1 != nil {
