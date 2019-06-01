@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -14,12 +15,13 @@ var configPath = "config.txt"
 var cfstr, _ = ReadConfig(configPath)
 var arrstr = strings.Split(cfstr, "\n") //config src arr
 
-var fromFolder = strings.Fields(arrstr[1])[0]
-var outFolder = strings.Fields(arrstr[3])[0]
+var fromFolder = strings.Replace(arrstr[1], "\\r", "", -1)
+var outFolder = strings.Replace(arrstr[3], "\\r", "", -1)
 var copyList = strings.Replace(arrstr[5], "\\r", "", -1)
+var regString = strings.Replace(arrstr[7], "\\r", "", -1)
 
-var restr = strings.Split(strings.Replace(arrstr[7], "\\r", "", -1), ",")
-var outstr = strings.Split(strings.Replace(arrstr[9], "\\r", "", -1), ",")
+var restr = strings.Split(strings.Replace(arrstr[9], "\\r", "", -1), ",")
+var outstr = strings.Split(strings.Replace(arrstr[11], "\\r", "", -1), ",")
 
 func main() {
 	if copyList == "" {
@@ -41,8 +43,7 @@ func main() {
 func ReadConfig(ru string) (string, error) {
 	data, err := ioutil.ReadFile(ru)
 	if err != nil {
-		fmt.Println(err.Error())
-		panic("read err:" + err.Error())
+		return "", err
 	}
 	aString := string(data)
 
@@ -124,7 +125,11 @@ func copyFile(fromFolder string, outFolder string, copyList string, restr []stri
 
 	alen := len(fileNameList)
 	for i := 0; i < alen; i++ {
-		fileLongName := strings.Fields(strings.Split(fileNameList[i], " ")[0])[0]
+
+		reg := regexp.MustCompile(regString)
+		fileLongName := reg.FindString(fileNameList[i])
+		Log("------正则匹配的字符串为-" + fileLongName + "------")
+		// strings.Replace(arrstr[5], "\\r", "", -1)
 
 		// fromPath := fromFolder + fileLongName
 		fromPath := path.Join(fromFolder, fileLongName)
