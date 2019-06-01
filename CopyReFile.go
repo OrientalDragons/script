@@ -62,7 +62,7 @@ func doReString(data []byte, restr []string, outstr []string) []byte {
 	dataS := string(data)
 	for i := 0; i < len(restr); i++ {
 		dataS = strings.Replace(dataS, restr[i], outstr[i], -1)
-		Log("-------文件的字符串 " + restr[i] + " 被修改为 " + outstr[i])
+		Log("-------文件的字符串{" + restr[i] + "}被修改为{" + outstr[i] + "}")
 	}
 	return []byte(dataS)
 }
